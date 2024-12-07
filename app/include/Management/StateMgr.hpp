@@ -54,6 +54,15 @@ public slots:
     void onLoadButtonClicked();
 
     // ------------------------------
+    // Class signals
+    // ------------------------------
+
+signals:
+    void onTransformedImageChanged(QImage *image);
+
+    void onOriginalImageChanged(QImage *image);
+
+    // ------------------------------
     // Class private methods
     // ------------------------------
 private:
@@ -66,6 +75,7 @@ private:
     // ------------------------------
 
     ToolBar *m_toolBar{};
+
     QString m_previousDirectory{};
     ITransformation *m_transformation{};
 

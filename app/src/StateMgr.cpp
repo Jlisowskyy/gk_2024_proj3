@@ -43,13 +43,20 @@ void StateMgr::onAlgorithmChanged(const ALGORITHMS::TYPE type) {
     m_transformedImage = new QImage(*m_image);
 
     m_transformation->TransformImage(*m_transformedImage);
+
+    emit onTransformedImageChanged(m_transformedImage);
 }
 
 void StateMgr::onRefreshButtonClicked() {
     qDebug() << "refresh button clicked";
 
     if (m_transformation) {
+        delete m_transformedImage;
+        m_transformedImage = new QImage(*m_image);
+
         m_transformation->TransformImage(*m_transformedImage);
+
+        emit onTransformedImageChanged(m_transformedImage);
     }
 }
 
@@ -62,6 +69,9 @@ void StateMgr::onLoadButtonClicked() {
 
         m_image = pImage;
         m_transformedImage = new QImage(*m_image);
+
+        emit onOriginalImageChanged(m_image);
+        emit onTransformedImageChanged(m_transformedImage);
     }
 }
 
