@@ -5,10 +5,18 @@
 /* external includes */
 #include <QDebug>
 #include <string>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QDebug>
+#include <QLineEdit>
+#include <QDoubleValidator>
+#include <QHBoxLayout>
+#include <QLabel>
 
 /* internal includes */
 #include "../include/UiObjects/ToolBar.hpp"
 #include "../include/UiObjects/TextButton.hpp"
+#include "../include/UiObjects/TextSpin.hpp"
 
 ToolBar::ToolBar(QObject *parent) : QObject(parent) {
 }
@@ -42,4 +50,68 @@ void ToolBar::setupToolBar(QToolBar *toolBar) {
     Q_ASSERT(m_toolBar == nullptr);
     m_toolBar = toolBar;
 
+    _addSeparator();
+    _addToolbarLiteral("Algorithms");
+
+    auto *pButtonGroup = new QButtonGroup(m_toolBar);
+    for (uint32_t algoType = 0; algoType < ALGORITHMS::TYPE::LAST; ++algoType) {
+        auto *pRadioButton = new QRadioButton(ALGORITHMS::DESCRIPTIONS[algoType]);
+
+        if (algoType == ALGORITHMS::DEFAULT_SELECTION) {
+            pRadioButton->setChecked(true);
+        }
+
+        pRadioButton->setProperty(UI_CONSTANTS::DEFAULT_BUTTON_PAYLOAD, QVariant::fromValue(algoType));
+
+        connect(pRadioButton, &QRadioButton::toggled, this, &ToolBar::_onRadioButtonToggled);
+
+        pButtonGroup->addButton(pRadioButton);
+        m_toolBar->addWidget(pRadioButton);
+    }
+
+    _addSeparator();
+    _addToolbarLiteral("Dithering Params");
+
+    m_krSpin = _addSpinBoxToToolbar("Kr", "Provide input for Kr param");
+    m_kgSpin = _addSpinBoxToToolbar("Kg", "Provide input for Kg param");
+    m_kbSpin = _addSpinBoxToToolbar("Kb", "Provide input for Kb param");
+
+    _addSeparator();
+    _addToolbarLiteral("Popularity algorithm params");
+
+    m_kSpin = _addSpinBoxToToolbar("K", "Provide input for K param");
+
+    _addSeparator();
+    _addToolbarLiteral("Actions");
+
+    auto pButton = new TextButton(m_toolBar, "Click here to process the image", "Refresh image", ":icons/refresh.png");
+    m_refresh = pButton->getAction();
+    m_toolBar->addWidget(pButton);
+
+    _addSeparator();
+}
+
+void ToolBar::_onRadioButtonToggled() {
+    if (sender() == nullptr) {
+        return;
+    }
+
+    auto *pSelectedButton = qobject_cast<QRadioButton *>(sender());
+
+    if (pSelectedButton) {
+        Q_ASSERT(pSelectedButton->isChecked());
+
+        uint32_t algoType = pSelectedButton->property(UI_CONSTANTS::DEFAULT_BUTTON_PAYLOAD).toUInt();
+        emit AlgorithmChanged(static_cast<ALGORITHMS::TYPE>(algoType));
+
+        qDebug() << "SELECTED: " << ALGORITHMS::DESCRIPTIONS[algoType];
+    } else {
+        qDebug() << "RADIO BUTTON FAILED!";
+    }
+}
+
+QDoubleSpinBox *ToolBar::_addSpinBoxToToolbar(const char *text, const char *toolTip) {
+    auto *pSpin = new TextSpin(m_toolBar, toolTip, text);
+    m_toolBar->addWidget(pSpin);
+    return pSpin->getSpin();
 }

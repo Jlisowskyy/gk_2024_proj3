@@ -1,4 +1,0 @@
-/home/Jlisowskyy/.local/share/JetBrains/Toolbox/apps/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/Jlisowskyy/.local/share/JetBrains/Toolbox/apps/clion/bin/ninja/linux/x64/ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ "-DCMAKE_CXX_FLAGS=-Wall -Wextra -pedantic -g" -G Ninja -S /home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app -B /home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-debug
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-debug

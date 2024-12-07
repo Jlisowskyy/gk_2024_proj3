@@ -6,11 +6,14 @@
 #define APP_TOOLBAR_H
 
 /* internal includes */
+#include "../Intf.hpp"
 
 /* external includes */
 #include <QObject>
 #include <QToolBar>
 #include <QGraphicsItem>
+#include <QDoubleSpinBox>
+#include <QButtonGroup>
 
 /* Forward declaration */
 
@@ -35,10 +38,14 @@ public:
     // ------------------------------
     // Class slots
     // ------------------------------
-public slots:
+signals:
+
+    void AlgorithmChanged(ALGORITHMS::TYPE type);
+
     // ------------------------------
     // Class private methods
     // ------------------------------
+
 protected:
     void _addSeparator();
 
@@ -46,11 +53,29 @@ protected:
 
     QAction *_addButtonToToolbar(const char *name, const char *imgPath, const char *toolTip);
 
+    QDoubleSpinBox* _addSpinBoxToToolbar(const char* text, const char* toolTip);
+
+protected slots:
+
+    void _onRadioButtonToggled();
+
     // ------------------------------
     // Public fields
     // ------------------------------
 public:
     QToolBar *m_toolBar{};
+
+    /* actions */
+    QAction *m_refresh{};
+
+    /* Radio buttons */
+    QButtonGroup *m_buttonGroup{};
+
+    /* Param inputs */
+    QDoubleSpinBox *m_krSpin{};
+    QDoubleSpinBox *m_kgSpin{};
+    QDoubleSpinBox *m_kbSpin{};
+    QDoubleSpinBox *m_kSpin{};
 };
 
 
