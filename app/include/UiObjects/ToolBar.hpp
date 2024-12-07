@@ -36,10 +36,9 @@ public:
     void setupToolBar(QToolBar *toolBar);
 
     // ------------------------------
-    // Class slots
+    // Class signals
     // ------------------------------
 signals:
-
     void AlgorithmChanged(ALGORITHMS::TYPE type);
 
     // ------------------------------
@@ -53,10 +52,9 @@ protected:
 
     QAction *_addButtonToToolbar(const char *name, const char *imgPath, const char *toolTip);
 
-    QDoubleSpinBox* _addSpinBoxToToolbar(const char* text, const char* toolTip);
+    QDoubleSpinBox *_addSpinBoxToToolbar(const char *text, const char *toolTip);
 
 protected slots:
-
     void _onRadioButtonToggled();
 
     // ------------------------------
@@ -67,6 +65,7 @@ public:
 
     /* actions */
     QAction *m_refresh{};
+    QAction *m_load{};
 
     /* Radio buttons */
     QButtonGroup *m_buttonGroup{};

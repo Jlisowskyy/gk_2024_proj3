@@ -11,6 +11,7 @@
 
 /* Forward declarations */
 class ToolBar;
+class StateMgr;
 
 QT_BEGIN_NAMESPACE
 
@@ -43,6 +44,7 @@ protected:
 private:
     Ui::MainWindow *m_ui;
     ToolBar *m_toolBar;
+    StateMgr *m_stateMgr;
 };
 
 #endif // MAINWINDOW_H

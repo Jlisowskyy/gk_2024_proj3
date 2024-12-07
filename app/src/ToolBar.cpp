@@ -88,6 +88,10 @@ void ToolBar::setupToolBar(QToolBar *toolBar) {
     m_refresh = pButton->getAction();
     m_toolBar->addWidget(pButton);
 
+    pButton = new TextButton(m_toolBar, "Click here to load new image from a disk", "Load image", ":icons/load.png");
+    m_load = pButton->getAction();
+    m_toolBar->addWidget(pButton);
+
     _addSeparator();
 }
 
