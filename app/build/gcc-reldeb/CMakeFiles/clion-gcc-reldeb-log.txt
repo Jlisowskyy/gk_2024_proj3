@@ -1,0 +1,6 @@
+/home/Jlisowskyy/.local/share/JetBrains/Toolbox/apps/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_MAKE_PROGRAM=/home/Jlisowskyy/.local/share/JetBrains/Toolbox/apps/clion/bin/ninja/linux/x64/ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ "-DCMAKE_CXX_FLAGS=-Wall -Wextra -pedantic -g -O2" -G Ninja -S /home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app -B /home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-reldeb
+CMake Error at CMakeLists.txt:104 (message):
+  UNKNOWN BUILD TYPE: RELWITHDEBINFO
+
+
+-- Configuring incomplete, errors occurred!

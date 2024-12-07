@@ -1,0 +1,9 @@
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/app.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/edit_cache.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/rebuild_cache.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/list_install_components.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/install.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/install/local.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/install/strip.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/app_autogen_timestamp_deps.dir
+/home/Jlisowskyy/Storage/Repos/gk_2024_proj3/app/build/gcc-release/CMakeFiles/app_autogen.dir
