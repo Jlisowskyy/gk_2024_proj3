@@ -13,34 +13,46 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
+DisplaySpace::DisplaySpace(QWidget *parent) : QWidget(parent) {
+    auto *pMainLayout = new QHBoxLayout(this);
+    pMainLayout->setContentsMargins(0, 0, 0, 0);
+    pMainLayout->setSpacing(10);
+
+    /* left layout */
+    auto *pOriginalLayout = new QVBoxLayout();
+    pOriginalLayout->setContentsMargins(0, 0, 0, 0);
+    auto *pOriginalImageLabel = new QLabel();
+    pOriginalImageLabel->setScaledContents(true);
+    pOriginalImageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    auto *pOriginalCaptionLabel = new QLabel("Original Image");
+    pOriginalCaptionLabel->setAlignment(Qt::AlignCenter);
+    pOriginalLayout->addWidget(pOriginalImageLabel, 1);
+    pOriginalLayout->addWidget(pOriginalCaptionLabel);
+
+    /* right layout */
+    auto *pTransformedLayout = new QVBoxLayout();
+    pTransformedLayout->setContentsMargins(0, 0, 0, 0);
+    auto *pTransformedImageLabel = new QLabel();
+    pTransformedImageLabel->setScaledContents(true);
+    pTransformedImageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    auto *pTransformedCaptionLabel = new QLabel("Transformed Image");
+    pTransformedCaptionLabel->setAlignment(Qt::AlignCenter);
+    pTransformedLayout->addWidget(pTransformedImageLabel, 1);
+    pTransformedLayout->addWidget(pTransformedCaptionLabel);
+
+    /* main layout */
+    pMainLayout->addLayout(pOriginalLayout, 1);
+    pMainLayout->addLayout(pTransformedLayout, 1);
+
+    m_originalImageLabel = pOriginalImageLabel;
+    m_transformedImageLabel = pTransformedImageLabel;
+}
+
 void DisplaySpace::setup(StateMgr *stateMgr) {
     Q_ASSERT(stateMgr != nullptr);
     Q_ASSERT(m_stateMgr == nullptr);
 
     m_stateMgr = stateMgr;
-
-    /* left layout */
-    auto *pOriginalLayout = new QVBoxLayout();
-    auto *pOriginalImageLabel = new QLabel();
-    auto *pOriginalCaptionLabel = new QLabel("Original Image");
-    pOriginalCaptionLabel->setAlignment(Qt::AlignCenter);
-    pOriginalLayout->addWidget(pOriginalImageLabel);
-    pOriginalLayout->addWidget(pOriginalCaptionLabel);
-    m_originalImageLabel = pOriginalImageLabel;
-
-    /* right layout */
-    auto *pTransformedLayout = new QVBoxLayout();
-    auto *pTransformedImageLabel = new QLabel();
-    auto *pTransformedCaptionLabel = new QLabel("Transformed Image");
-    pTransformedCaptionLabel->setAlignment(Qt::AlignCenter);
-    pTransformedLayout->addWidget(pTransformedImageLabel);
-    pTransformedLayout->addWidget(pTransformedCaptionLabel);
-    m_transformedImageLabel = pTransformedImageLabel;
-
-    /* main layout */
-    auto *pMainLayout = new QHBoxLayout(this);
-    pMainLayout->addLayout(pOriginalLayout);
-    pMainLayout->addLayout(pTransformedLayout);
 
     // Connect signals from StateMgr
     connect(stateMgr, &StateMgr::onOriginalImageChanged, this, &DisplaySpace::onOriginalImageChanged);
@@ -51,7 +63,7 @@ void DisplaySpace::onOriginalImageChanged(QImage *image) {
     if (image) {
         const QPixmap pixmap = QPixmap::fromImage(*image).scaled(
             m_originalImageLabel->size(),
-            Qt::KeepAspectRatio,
+            Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation
         );
         m_originalImageLabel->setPixmap(pixmap);
@@ -65,7 +77,7 @@ void DisplaySpace::onTransformedImageChanged(QImage *image) {
     if (image) {
         const QPixmap pixmap = QPixmap::fromImage(*image).scaled(
             m_transformedImageLabel->size(),
-            Qt::KeepAspectRatio,
+            Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation
         );
         m_transformedImageLabel->setPixmap(pixmap);

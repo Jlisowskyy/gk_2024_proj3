@@ -42,6 +42,8 @@ public:
 
     void setup(ToolBar *toolBar);
 
+    void loadDefaults();
+
     // ------------------------------
     // Class slots
     // ------------------------------
@@ -68,7 +70,9 @@ signals:
 private:
     [[nodiscard]] static QImage *_loadTextureFromFile(const QString &path);
 
-    QImage *_loadTextureFromFile();
+    QString _loadImageFileName();
+
+    void _loadImage(QImage *originalImage);
 
     // ------------------------------
     // Class fields

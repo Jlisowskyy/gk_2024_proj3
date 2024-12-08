@@ -20,20 +20,23 @@ MainWindow::MainWindow(QWidget *parent)
       m_toolBar(new ToolBar(this)),
       m_stateMgr(new StateMgr(this)),
       m_displaySpace(new DisplaySpace(this)) {
-    setMinimumSize(600, 900);
-    setWindowTitle("Bezier 3D drawer");
+    setMinimumSize(900, 600);
+    setWindowTitle("Dithering algorithms");
 
     m_ui->setupUi(this);
     m_toolBar->setupToolBar(m_ui->toolBar);
     m_stateMgr->setup(m_toolBar);
     m_displaySpace->setup(m_stateMgr);
 
-    // QFrame *frame = new QFrame(this);
-    // frame->setFrameShape(QFrame::HLine);
-    // frame->setFrameShadow(QFrame::Sunken);
-    // frame->setLineWidth(3);
-    // frame->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
-    // m_ui->verticalLayout->addWidget(frame);
+    QFrame *frame = new QFrame(this);
+    frame->setFrameShape(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    frame->setLineWidth(3);
+    frame->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+    m_ui->verticalLayout->addWidget(frame);
+    m_ui->verticalLayout->addWidget(m_displaySpace);
+
+    m_stateMgr->loadDefaults();
 }
 
 

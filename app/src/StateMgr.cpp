@@ -25,6 +25,10 @@ void StateMgr::setup(ToolBar *toolBar) {
     connect(toolBar, &ToolBar::AlgorithmChanged, this, &StateMgr::onAlgorithmChanged);
 }
 
+void StateMgr::loadDefaults() {
+    _loadImage(_loadTextureFromFile(UI_CONSTANTS::DEFAULT_IMAGE_PATH));
+}
+
 void StateMgr::onAlgorithmChanged(const ALGORITHMS::TYPE type) {
     qDebug() << "changing algorithm in state mgr";
     Q_ASSERT(type < ALGORITHMS::TYPE::LAST);
@@ -63,16 +67,7 @@ void StateMgr::onRefreshButtonClicked() {
 void StateMgr::onLoadButtonClicked() {
     qDebug() << "load button clicked";
 
-    if (const auto pImage = _loadTextureFromFile()) {
-        delete m_transformedImage;
-        delete m_image;
-
-        m_image = pImage;
-        m_transformedImage = new QImage(*m_image);
-
-        emit onOriginalImageChanged(m_image);
-        emit onTransformedImageChanged(m_transformedImage);
-    }
+    _loadImage(_loadTextureFromFile(_loadImageFileName()));
 }
 
 QImage *StateMgr::_loadTextureFromFile(const QString &path) {
@@ -86,7 +81,7 @@ QImage *StateMgr::_loadTextureFromFile(const QString &path) {
     return pImage;
 }
 
-QImage *StateMgr::_loadTextureFromFile() {
+QString StateMgr::_loadImageFileName() {
     const QString initialPath = m_previousDirectory.isEmpty() ? QDir::currentPath() : m_previousDirectory;
     const QString filePath = QFileDialog::getOpenFileName(
         nullptr,
@@ -98,9 +93,22 @@ QImage *StateMgr::_loadTextureFromFile() {
     if (!filePath.isEmpty()) {
         m_previousDirectory = QFileInfo(filePath).absolutePath();
         qDebug() << "File selected:" << filePath;
-        return _loadTextureFromFile(filePath);
+    } else {
+        qDebug() << "No file selected.";
     }
 
-    qDebug() << "No file selected.";
-    return nullptr;
+    return filePath;
+}
+
+void StateMgr::_loadImage(QImage *const originalImage) {
+    if (originalImage) {
+        delete m_transformedImage;
+        delete m_image;
+
+        m_image = originalImage;
+        m_transformedImage = new QImage(*originalImage);
+
+        emit onOriginalImageChanged(originalImage);
+        emit onTransformedImageChanged(m_transformedImage);
+    }
 }
