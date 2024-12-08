@@ -73,8 +73,11 @@ void ToolBar::setupToolBar(QToolBar *toolBar) {
     _addToolbarLiteral("Dithering Params");
 
     m_krSpin = _addSpinBoxToToolbar("Kr", "Provide input for Kr param");
+    m_krSpin->setValue(4.0);
     m_kgSpin = _addSpinBoxToToolbar("Kg", "Provide input for Kg param");
+    m_kgSpin->setValue(4.0);
     m_kbSpin = _addSpinBoxToToolbar("Kb", "Provide input for Kb param");
+    m_kbSpin->setValue(4.0);
 
     _addSeparator();
     _addToolbarLiteral("Popularity algorithm params");
@@ -103,7 +106,6 @@ void ToolBar::_onRadioButtonToggled() {
     auto *pSelectedButton = qobject_cast<QRadioButton *>(sender());
 
     if (pSelectedButton && pSelectedButton->isChecked()) {
-
         uint32_t algoType = pSelectedButton->property(UI_CONSTANTS::DEFAULT_BUTTON_PAYLOAD).toUInt();
         emit AlgorithmChanged(static_cast<ALGORITHMS::TYPE>(algoType));
 

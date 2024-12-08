@@ -23,8 +23,7 @@ public:
 
     AverageDithering() = default;
 
-    explicit AverageDithering(ToolBar *) {
-    }
+    explicit AverageDithering(const ToolBar * toolBar);
 
     ~AverageDithering() override = default;
 
@@ -33,6 +32,15 @@ public:
     // ------------------------------
 
     void TransformImage(QImage &image) override;
+
+
+    // ------------------------------
+    // Class fields
+    // ------------------------------
+private:
+    const double m_Kr;
+    const double m_Kg;
+    const double m_Kb;
 };
 
 #endif //AVERAGDITHERING_HPP
