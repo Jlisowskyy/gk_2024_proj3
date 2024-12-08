@@ -29,12 +29,12 @@ class StateMgr final : public QObject {
     Q_OBJECT
 
     inline static std::array<ITransformation* (*)(ToolBar *), ALGORITHMS::TYPE::LAST> TRANSFORMATIONS{
-        [](ToolBar *toolBar) -> ITransformation * { return new Identity(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new AverageDithering(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new ErrorDiffusionDithering(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new RandomOrderedDithering(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new RelativeOrderedDithering(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new PopularityDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new Identity(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new AverageDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new ErrorDiffusionDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new RandomOrderedDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new RelativeOrderedDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation *{ return new PopularityDithering(toolBar); },
     };
 
     // ------------------------------
@@ -90,7 +90,7 @@ private:
     ToolBar *m_toolBar{};
 
     QString m_previousDirectory{};
-    ITransformation *m_transformation{};
+    ALGORITHMS::TYPE m_currentAlgorithm{ALGORITHMS::DEFAULT_SELECTION};
 
     QImage *m_image{};
     QImage *m_transformedImage{};

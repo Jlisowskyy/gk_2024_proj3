@@ -33,28 +33,20 @@ void StateMgr::onAlgorithmChanged(const ALGORITHMS::TYPE type) {
     qDebug() << "changing algorithm in state mgr";
     Q_ASSERT(type < ALGORITHMS::TYPE::LAST);
 
-    const auto func = TRANSFORMATIONS[type];
-
-    if (!func) {
-        qDebug() << "No transformation for algorithm:" << ALGORITHMS::DESCRIPTIONS[type];
-        return;
-    }
-
-    delete m_transformation;
-    m_transformation = func(m_toolBar);
+    m_currentAlgorithm = type;
 }
 
 void StateMgr::onRefreshButtonClicked() {
     qDebug() << "refresh button clicked";
 
-    if (m_transformation) {
-        delete m_transformedImage;
-        m_transformedImage = new QImage(*m_image);
+    ITransformation *const newTransformation = TRANSFORMATIONS[m_currentAlgorithm](m_toolBar);
 
-        m_transformation->TransformImage(*m_transformedImage);
+    delete m_transformedImage;
+    m_transformedImage = new QImage(*m_image);
 
-        emit onTransformedImageChanged(m_transformedImage);
-    }
+    newTransformation->TransformImage(*m_transformedImage);
+
+    emit onTransformedImageChanged(m_transformedImage);
 }
 
 void StateMgr::onLoadButtonClicked() {

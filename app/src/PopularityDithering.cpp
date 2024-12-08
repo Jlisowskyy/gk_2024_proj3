@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iomanip>
 #include <QDebug>
+#include <limits>
 
 /* Octree */
 static constexpr size_t NUM_CHILD = 8;
@@ -32,20 +33,73 @@ class OctTree final {
             CleanUp();
         }
 
-        void InsertColor(const QRgb color, const uint32_t range) {
+        bool Reduce() {
+            if (m_childCount == 0) {
+                return true;
+            }
+
+            Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
+            Q_ASSERT(m_minChildIdx != std::numeric_limits<uint64_t>::max());
+            if (!m_children[m_minChildIdx]->Reduce()) {
+                return false;
+            }
+
+            --m_childCount;
+            delete m_children[m_minChildIdx];
+            m_children[m_minChildIdx] = nullptr;
+
+            uint64_t minCount = std::numeric_limits<uint64_t>::max();
+            uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
+
+            for (size_t i = 0; i < m_children.size(); ++i) {
+                if (m_children[i]) {
+                    if (minCount > m_children[i]->m_minCount) {
+                        minCount = m_children[i]->m_minCount;
+                        minChildIdx = i;
+                    }
+                }
+            }
+
+            m_minCount = minCount;
+            m_minChildIdx = minChildIdx;
+
+            return false;
+        }
+
+        bool InsertColor(const QRgb color, const uint32_t range) {
+            ++m_count;
+
             if (range == 0) {
                 Q_ASSERT(m_color == color);
-                ++m_count;
-                return;
+                m_minCount = m_count;
+                return m_count == 1;
             }
 
             const uint32_t idx = GetColorIndex(color);
 
             if (!m_children[idx]) {
                 m_children[idx] = new node(GetRangeColor(m_color, color, range));
+                ++m_childCount;
             }
 
-            m_children[idx]->InsertColor(color, range / 2);
+            const bool result = m_children[idx]->InsertColor(color, range / 2);
+
+            uint64_t minCount = std::numeric_limits<uint64_t>::max();
+            uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
+
+            for (size_t i = 0; i < m_children.size(); ++i) {
+                if (m_children[i]) {
+                    if (minCount > m_children[i]->m_minCount) {
+                        minCount = m_children[i]->m_minCount;
+                        minChildIdx = i;
+                    }
+                }
+            }
+            Q_ASSERT(minCount != std::numeric_limits<uint64_t>::max());
+
+            m_minCount = minCount;
+            m_minChildIdx = minChildIdx;
+            return result;
         }
 
         [[nodiscard]] uint32_t GetColorIndex(const QRgb color) const {
@@ -59,10 +113,12 @@ class OctTree final {
         }
 
         [[nodiscard]] static QRgb GetRangeColor(const QRgb parentColor, const QRgb color, const uint32_t parentRange) {
-            uint32_t idx{};
-
             /* We go level lower */
             const int childRange = static_cast<int>(parentRange / 2);
+
+            if (childRange == 0) {
+                return color;
+            }
 
             const int red = qRed(parentColor) + (qRed(color) > qRed(parentColor) ? childRange : -childRange);
             const int green = qGreen(parentColor) + (qGreen(color) > qGreen(parentColor) ? childRange : -childRange);
@@ -78,8 +134,24 @@ class OctTree final {
             }
         }
 
+        [[nodiscard]] QRgb FindClosestColor(const QRgb color) const {
+            if (m_childCount == 0) {
+                return m_color;
+            }
+
+            const uint32_t idx = GetColorIndex(color);
+            if (m_children[idx]) {
+                return m_children[idx]->FindClosestColor(color);
+            }
+
+            return m_color;
+        }
+
         QRgb m_color{};
+        uint32_t m_childCount{};
         uint64_t m_count{};
+        uint64_t m_minCount{};
+        uint64_t m_minChildIdx{};
         std::array<node *, NUM_CHILD> m_children{};
     };
 
@@ -87,7 +159,8 @@ class OctTree final {
     // Class creation
     // ------------------------------
 public:
-    OctTree() = default;
+    OctTree() : m_root(new node(qRgb(127, 127, 127))) {
+    }
 
     ~OctTree() {
         delete m_root;
@@ -106,12 +179,19 @@ public:
     // Class interaction
     // ------------------------------
 
-    void InsertColor(QColor const &color) {
-        if (m_root == nullptr) {
-            m_root = new node(qRgb(127, 127, 127));
+    void Reduce(const uint32_t numColors) {
+        while (m_count > numColors) {
+            m_root->Reduce();
+            --m_count;
         }
+    }
 
-        m_root->InsertColor(color.rgb(), 128);
+    void InsertColor(const QRgb color) {
+        m_count += m_root->InsertColor(color, 128);
+    }
+
+    [[nodiscard]] QRgb FindClosestColor(const QRgb color) const {
+        return m_root->FindClosestColor(color);
     }
 
     void DumpToDotFile(const std::string &filename) const {
@@ -173,6 +253,7 @@ public:
     // ------------------------------
 private:
     node *m_root{};
+    uint64_t m_count{};
 };
 
 
@@ -189,12 +270,20 @@ void PopularityDithering::TransformImage(QImage &image) {
         const auto rowData = reinterpret_cast<const QRgb *>(image.scanLine(y));
         for (int x = 0; x < image.width(); ++x) {
             const QRgb pixelColor = rowData[x];
-            tree.InsertColor(QColor(pixelColor));
+            tree.InsertColor(pixelColor);
         }
     }
     tree.DumpToDotFile("octree_full.dot");
 
     /* reduce the colors */
-
+    tree.Reduce(static_cast<uint64_t>(m_K));
     tree.DumpToDotFile("octree_reduced.dot");
+
+    /* replace the colors */
+    for (int y = 0; y < image.height(); ++y) {
+        const auto rowData = reinterpret_cast<QRgb *>(image.scanLine(y));
+        for (int x = 0; x < image.width(); ++x) {
+            rowData[x] = tree.FindClosestColor(rowData[x]);
+        }
+    }
 }
