@@ -48,6 +48,10 @@ class OctTree final {
             delete m_children[m_minChildIdx];
             m_children[m_minChildIdx] = nullptr;
 
+            if (m_childCount == 0) {
+                return true;
+            }
+
             uint64_t minCount = std::numeric_limits<uint64_t>::max();
             uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
 
