@@ -19,13 +19,13 @@ public:
 
     ITransformation() = default;
 
-    virtual ~ITransformation() = 0;
+    virtual ~ITransformation() = default;
 
     // ------------------------------
     // Interface methods
     // ------------------------------
 
-    virtual void TransformImage(const QImage &image) = 0;
+    virtual void TransformImage(QImage &image) = 0;
 };
 
 #endif //ITRANSFORMATION_H

@@ -54,7 +54,6 @@ void DisplaySpace::setup(StateMgr *stateMgr) {
 
     m_stateMgr = stateMgr;
 
-    // Connect signals from StateMgr
     connect(stateMgr, &StateMgr::onOriginalImageChanged, this, &DisplaySpace::onOriginalImageChanged);
     connect(stateMgr, &StateMgr::onTransformedImageChanged, this, &DisplaySpace::onTransformedImageChanged);
 }

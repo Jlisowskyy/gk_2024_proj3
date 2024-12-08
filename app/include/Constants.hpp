@@ -10,6 +10,7 @@
 
 namespace ALGORITHMS {
     enum TYPE : uint32_t {
+        IDENTITY,
         AVERAGE,
         ERROR_DIFFUSION,
         RANDOM_ORDERED,
@@ -19,6 +20,7 @@ namespace ALGORITHMS {
     };
 
     static constexpr std::array<const char *, TYPE::LAST> DESCRIPTIONS{
+        "Identity - does nothing",
         "Average dithering",
         "Error diffusion dithering",
         "Random ordered dithering",

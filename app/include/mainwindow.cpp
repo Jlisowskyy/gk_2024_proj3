@@ -28,12 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_stateMgr->setup(m_toolBar);
     m_displaySpace->setup(m_stateMgr);
 
-    QFrame *frame = new QFrame(this);
-    frame->setFrameShape(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    frame->setLineWidth(3);
-    frame->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
-    m_ui->verticalLayout->addWidget(frame);
     m_ui->verticalLayout->addWidget(m_displaySpace);
 
     m_stateMgr->loadDefaults();

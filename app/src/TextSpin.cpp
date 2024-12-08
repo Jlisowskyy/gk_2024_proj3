@@ -22,5 +22,6 @@ TextSpin::TextSpin(QWidget *parent, const char *toolTip, const char *title) : QW
     pLayout->addWidget(new QLabel(QString(tr(title)) + QString(tr(":")), this));
     pLayout->addStretch();
     pLayout->addWidget(pSpinBox);
-}
 
+    m_spin = pSpinBox;
+}

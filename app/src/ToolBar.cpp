@@ -102,15 +102,12 @@ void ToolBar::_onRadioButtonToggled() {
 
     auto *pSelectedButton = qobject_cast<QRadioButton *>(sender());
 
-    if (pSelectedButton) {
-        Q_ASSERT(pSelectedButton->isChecked());
+    if (pSelectedButton && pSelectedButton->isChecked()) {
 
         uint32_t algoType = pSelectedButton->property(UI_CONSTANTS::DEFAULT_BUTTON_PAYLOAD).toUInt();
         emit AlgorithmChanged(static_cast<ALGORITHMS::TYPE>(algoType));
 
         qDebug() << "SELECTED: " << ALGORITHMS::DESCRIPTIONS[algoType];
-    } else {
-        qDebug() << "RADIO BUTTON FAILED!";
     }
 }
 

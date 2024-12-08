@@ -10,6 +10,14 @@
 #include "../Interfaces/ITransformation.h"
 #include "../UiObjects/ToolBar.hpp"
 
+/* transformation includes */
+#include "../Transformations/Identity.hpp"
+#include "../Transformations/AveragDithering.hpp"
+#include "../Transformations/PopularityDithering.hpp"
+#include "../Transformations/ErrorDiffusionDithering.hpp"
+#include "../Transformations/RandomOrderedDithering.hpp"
+#include "../Transformations/RelativeOrderedDithering.hpp"
+
 /* external includes */
 #include <QObject>
 #include <QImage>
@@ -21,11 +29,12 @@ class StateMgr final : public QObject {
     Q_OBJECT
 
     inline static std::array<ITransformation* (*)(ToolBar *), ALGORITHMS::TYPE::LAST> TRANSFORMATIONS{
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
+        [](ToolBar *toolBar) -> ITransformation * { return new Identity(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new AverageDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new PopularityDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new ErrorDiffusionDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new RandomOrderedDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new RelativeOrderedDithering(toolBar); },
     };
 
     // ------------------------------

@@ -42,13 +42,6 @@ void StateMgr::onAlgorithmChanged(const ALGORITHMS::TYPE type) {
 
     delete m_transformation;
     m_transformation = func(m_toolBar);
-
-    delete m_transformedImage;
-    m_transformedImage = new QImage(*m_image);
-
-    m_transformation->TransformImage(*m_transformedImage);
-
-    emit onTransformedImageChanged(m_transformedImage);
 }
 
 void StateMgr::onRefreshButtonClicked() {
