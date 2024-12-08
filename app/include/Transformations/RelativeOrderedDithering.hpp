@@ -8,6 +8,7 @@
 /* internal includes */
 #include "../Intf.hpp"
 #include "../Interfaces/ITransformation.h"
+#include "../Transformations/DitheringMaps.hpp"
 
 /* external includes */
 #include <QImage>

@@ -11,6 +11,7 @@
 
 /* external includes */
 #include <QImage>
+#include <random>
 
 /* Forward declarations */
 class ToolBar;
@@ -23,7 +24,7 @@ public:
 
     RandomOrderedDithering() = delete;
 
-    explicit RandomOrderedDithering(const ToolBar* toolBar);
+    explicit RandomOrderedDithering(const ToolBar *toolBar);
 
     ~RandomOrderedDithering() override = default;
 
@@ -37,6 +38,7 @@ public:
     // Class fields
     // ------------------------------
 private:
+    std::mt19937_64 m_gen{std::random_device{}()};
     const double m_Kr;
     const double m_Kg;
     const double m_Kb;

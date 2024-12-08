@@ -146,11 +146,13 @@ class OctTree final {
         }
 
     public:
-        QRgb m_color{};
-        uint32_t m_childCount{};
-        uint64_t m_count{};
+        QRgb m_color{}; /* leaf - color of the pixel; non-leaf - color describing the cube */
+        uint64_t m_count{}; /* leaf - amount of times this color appears in the picture; non-leaf - sum of children appearances */
+
         uint64_t m_minCount{};
         uint64_t m_minChildIdx{};
+
+        uint32_t m_childCount{};
         std::array<node *, NUM_CHILD> m_children{};
     };
 

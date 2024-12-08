@@ -23,6 +23,14 @@ void StateMgr::setup(ToolBar *toolBar) {
     connect(toolBar->m_load, &QAction::triggered, this, &StateMgr::onLoadButtonClicked);
     connect(toolBar->m_refresh, &QAction::triggered, this, &StateMgr::onRefreshButtonClicked);
     connect(toolBar, &ToolBar::AlgorithmChanged, this, &StateMgr::onAlgorithmChanged);
+
+    DebugDisplayMatrix<0>();
+    DebugDisplayMatrix<1>();
+    DebugDisplayMatrix<2>();
+    DebugDisplayMatrix<3>();
+    DebugDisplayMatrix<4>();
+    DebugDisplayMatrix<5>();
+    DebugDisplayMatrix<6>();
 }
 
 void StateMgr::loadDefaults() {
