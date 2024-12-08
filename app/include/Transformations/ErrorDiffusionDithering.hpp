@@ -23,8 +23,7 @@ public:
 
     ErrorDiffusionDithering() = delete;
 
-    explicit ErrorDiffusionDithering(ToolBar *) {
-    }
+    explicit ErrorDiffusionDithering(const ToolBar * toolBar);
 
     ~ErrorDiffusionDithering() override = default;
 
@@ -33,6 +32,14 @@ public:
     // ------------------------------
 
     void TransformImage(QImage &image) override;
+
+    // ------------------------------
+    // Class fields
+    // ------------------------------
+private:
+    const double m_Kr;
+    const double m_Kg;
+    const double m_Kb;
 };
 
 #endif //ERRORDIFFUSIONDITHERING_HPP
