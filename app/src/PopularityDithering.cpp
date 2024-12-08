@@ -117,6 +117,7 @@ class OctTree final {
 
         [[nodiscard]] QRgb FindClosestColor(const QRgb color) const {
             if (m_childCount == 0) {
+                Q_ASSERT(m_isLeaf);
                 return m_color;
             }
 
@@ -125,7 +126,7 @@ class OctTree final {
                 return m_children[idx]->FindClosestColor(color);
             }
 
-            return m_color;
+            return m_children[_pickClosestColorIdx(color)]->FindClosestColor(color);
         }
 
     private:
@@ -144,6 +145,30 @@ class OctTree final {
 
             m_minCount = minCount;
             m_minChildIdx = minChildIdx;
+        }
+
+        [[nodiscard]] uint32_t _pickClosestColorIdx(const QRgb color) const {
+            const bool redBit = qRed(color) > qRed(m_color);
+            const bool greenBit = qGreen(color) > qGreen(m_color);
+            const bool blueBit = qBlue(color) > qBlue(m_color);
+
+            uint32_t bestPickIdx;
+            uint32_t bestPickSimilarities = 0;
+            for (uint32_t idx = 0; idx < NUM_CHILD; ++idx) {
+                if (m_children[idx]) {
+                    const uint32_t similarities =
+                        ((idx & 1) == redBit) +
+                        (((idx >> 1) & 1) == greenBit) +
+                        (((idx >> 2) & 1) == blueBit);
+
+                    if (similarities >= bestPickSimilarities) {
+                        bestPickSimilarities = similarities;
+                        bestPickIdx = idx;
+                    }
+                }
+            }
+
+            return bestPickIdx;
         }
 
     public:
