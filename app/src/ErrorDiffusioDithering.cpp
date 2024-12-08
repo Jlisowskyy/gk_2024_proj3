@@ -52,7 +52,7 @@ void ErrorDiffusionDithering::TransformImage(QImage &image) {
                     const int nx = x + dx;
                     const int ny = y + dy;
 
-                    if (nx >= 0 && nx < image.width() && ny >= 0 && ny <= image.height()) {
+                    if (nx >= 0 && nx < image.width() && ny >= 0 && ny < image.height()) {
                         const auto nRowDataSource = reinterpret_cast<QRgb *>(image.scanLine(ny));
                         const double filterValue = DEFAULT_FILTER[
                             dy + DEFAULT_FILTER_DY * DEFAULT_FILTER_SIZE + dx + DEFAULT_FILTER_DX];
