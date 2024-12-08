@@ -31,10 +31,10 @@ class StateMgr final : public QObject {
     inline static std::array<ITransformation* (*)(ToolBar *), ALGORITHMS::TYPE::LAST> TRANSFORMATIONS{
         [](ToolBar *toolBar) -> ITransformation * { return new Identity(toolBar); },
         [](ToolBar *toolBar) -> ITransformation * { return new AverageDithering(toolBar); },
-        [](ToolBar *toolBar) -> ITransformation * { return new PopularityDithering(toolBar); },
         [](ToolBar *toolBar) -> ITransformation * { return new ErrorDiffusionDithering(toolBar); },
         [](ToolBar *toolBar) -> ITransformation * { return new RandomOrderedDithering(toolBar); },
         [](ToolBar *toolBar) -> ITransformation * { return new RelativeOrderedDithering(toolBar); },
+        [](ToolBar *toolBar) -> ITransformation * { return new PopularityDithering(toolBar); },
     };
 
     // ------------------------------
