@@ -26,38 +26,39 @@ class OctTree final {
     struct node {
         node() = delete;
 
-        explicit node(const QRgb color) : m_color(color) {
+        explicit node(const QRgb color, const bool isLeaf = false) : m_color(color), m_isLeaf(isLeaf) {
         }
 
         ~node() {
             CleanUp();
         }
 
-        bool Reduce() {
-            if (m_childCount == 0) {
-                return true;
-            }
-
+        uint64_t Reduce() {
             Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
             Q_ASSERT(m_minChildIdx != std::numeric_limits<uint64_t>::max());
-            if (!m_children[m_minChildIdx]->Reduce()) {
+
+            if (m_children[m_minChildIdx]->m_isLeaf) {
+                const uint64_t count = m_children[m_minChildIdx]->m_count;
+
+                --m_childCount;
+                delete m_children[m_minChildIdx];
+                m_children[m_minChildIdx] = nullptr;
+
                 _setMin();
-                Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
-
-                return false;
+                return count;
             }
 
-            --m_childCount;
-            delete m_children[m_minChildIdx];
-            m_children[m_minChildIdx] = nullptr;
+            const uint64_t count = m_children[m_minChildIdx]->Reduce();
 
-            if (m_childCount == 0) {
-                m_minCount = m_count;
-                return true;
+            if (m_children[m_minChildIdx]->m_childCount == 0) {
+                --m_childCount;
+                delete m_children[m_minChildIdx];
+                m_children[m_minChildIdx] = nullptr;
             }
 
+            m_count -= count;
             _setMin();
-            return false;
+            return count;
         }
 
         bool InsertColor(const QRgb color, const uint32_t range) {
@@ -72,7 +73,7 @@ class OctTree final {
             const uint32_t idx = GetColorIndex(color);
 
             if (!m_children[idx]) {
-                m_children[idx] = new node(GetRangeColor(m_color, color, range));
+                m_children[idx] = new node(GetRangeColor(m_color, color, range), range == 1);
                 ++m_childCount;
             }
 
@@ -147,7 +148,9 @@ class OctTree final {
 
     public:
         QRgb m_color{}; /* leaf - color of the pixel; non-leaf - color describing the cube */
-        uint64_t m_count{}; /* leaf - amount of times this color appears in the picture; non-leaf - sum of children appearances */
+        uint64_t m_count{};
+        /* leaf - amount of times this color appears in the picture; non-leaf - sum of children appearances */
+        bool m_isLeaf;
 
         uint64_t m_minCount{};
         uint64_t m_minChildIdx{};
