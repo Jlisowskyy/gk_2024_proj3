@@ -41,6 +41,9 @@ class OctTree final {
             Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
             Q_ASSERT(m_minChildIdx != std::numeric_limits<uint64_t>::max());
             if (!m_children[m_minChildIdx]->Reduce()) {
+                _setMin();
+                Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
+
                 return false;
             }
 
@@ -49,24 +52,11 @@ class OctTree final {
             m_children[m_minChildIdx] = nullptr;
 
             if (m_childCount == 0) {
+                m_minCount = m_count;
                 return true;
             }
 
-            uint64_t minCount = std::numeric_limits<uint64_t>::max();
-            uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
-
-            for (size_t i = 0; i < m_children.size(); ++i) {
-                if (m_children[i]) {
-                    if (minCount > m_children[i]->m_minCount) {
-                        minCount = m_children[i]->m_minCount;
-                        minChildIdx = i;
-                    }
-                }
-            }
-
-            m_minCount = minCount;
-            m_minChildIdx = minChildIdx;
-
+            _setMin();
             return false;
         }
 
@@ -87,22 +77,8 @@ class OctTree final {
             }
 
             const bool result = m_children[idx]->InsertColor(color, range / 2);
-
-            uint64_t minCount = std::numeric_limits<uint64_t>::max();
-            uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
-
-            for (size_t i = 0; i < m_children.size(); ++i) {
-                if (m_children[i]) {
-                    if (minCount > m_children[i]->m_minCount) {
-                        minCount = m_children[i]->m_minCount;
-                        minChildIdx = i;
-                    }
-                }
-            }
-            Q_ASSERT(minCount != std::numeric_limits<uint64_t>::max());
-
-            m_minCount = minCount;
-            m_minChildIdx = minChildIdx;
+            _setMin();
+            Q_ASSERT(m_minCount != std::numeric_limits<uint64_t>::max());
             return result;
         }
 
@@ -151,6 +127,25 @@ class OctTree final {
             return m_color;
         }
 
+    private:
+        void _setMin() {
+            uint64_t minCount = std::numeric_limits<uint64_t>::max();
+            uint64_t minChildIdx = std::numeric_limits<uint64_t>::max();
+
+            for (size_t i = 0; i < m_children.size(); ++i) {
+                if (m_children[i]) {
+                    if (minCount > m_children[i]->m_minCount) {
+                        minCount = m_children[i]->m_minCount;
+                        minChildIdx = i;
+                    }
+                }
+            }
+
+            m_minCount = minCount;
+            m_minChildIdx = minChildIdx;
+        }
+
+    public:
         QRgb m_color{};
         uint32_t m_childCount{};
         uint64_t m_count{};
