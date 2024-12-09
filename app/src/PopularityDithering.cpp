@@ -155,7 +155,6 @@ class OctTree final {
                 if (m_children[idx]) {
                     const QRgb childColor = m_children[idx]->m_color;
 
-                    // Calculate color distance using Euclidean distance in RGB space
                     const int64_t redDiff = qRed(color) - qRed(childColor);
                     const int64_t greenDiff = qGreen(color) - qGreen(childColor);
                     const int64_t blueDiff = qBlue(color) - qBlue(childColor);
@@ -165,7 +164,6 @@ class OctTree final {
                         greenDiff * greenDiff +
                         blueDiff * blueDiff;
 
-                    // Update best pick if this child is closer
                     if (distance < minDistance) {
                         minDistance = distance;
                         bestPickIdx = idx;
