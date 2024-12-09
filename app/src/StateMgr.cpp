@@ -73,6 +73,16 @@ void StateMgr::onSaveImageClicked() {
 }
 
 void StateMgr::onGenerateButtonClicked() {
+    QImage *oldImage = m_image;
+    m_image = _generateImage();
+
+    delete m_transformedImage;
+    delete oldImage;
+
+    m_transformedImage = new QImage(*m_image);
+
+    emit onOriginalImageChanged(m_image);
+    emit onTransformedImageChanged(m_transformedImage);
 }
 
 QImage *StateMgr::_loadTextureFromFile(const QString &path) {
@@ -113,7 +123,99 @@ void StateMgr::_loadImage(QImage *const originalImage) {
         m_image = originalImage;
         m_transformedImage = new QImage(*originalImage);
 
-        emit onOriginalImageChanged(originalImage);
+        emit onOriginalImageChanged(m_image);
         emit onTransformedImageChanged(m_transformedImage);
+    }
+}
+
+QImage *StateMgr::_generateImage() {
+    QImage *image = new QImage(*m_image);
+
+    /* paint the zebra */
+    double coef = 0.3;
+    int col = 0;
+
+    const int zebraWidth = image->width() / 2;
+    for (int x = 0; x < zebraWidth; x += int(coef * double(zebraWidth))) {
+        const int size = int(coef * double(zebraWidth));
+        const int range = x + size;
+        const QColor color = col == 0 ? QColor(Qt::black) : QColor(Qt::white);
+
+        for (int y = 0; y < m_image->height(); y++) {
+            for (int xx = x; xx < range; xx++) {
+                image->setPixelColor(xx, y, color);
+            }
+        }
+
+        col ^= 1;
+        coef = std::max(coef * 0.8, 0.02);
+    }
+
+    static constexpr double brightnessValue = 1.0;
+    /* hsv model drawing */
+    for (int y = 0; y < image->height(); y++) {
+        for (int x = zebraWidth; x < image->width(); x++) {
+            const double HDegrees = (double(x - zebraWidth) / double(zebraWidth)) * 360.0;
+            const double SCoef = 1.0 - double(y) / double(image->height());
+
+            image->setPixelColor(x, y, _convertHsvToRgb(HDegrees, SCoef, brightnessValue));
+        }
+    }
+
+
+    return image;
+}
+
+QColor StateMgr::_convertHsvToRgb(double hue, double sat, double val) {
+    hue = std::fmod(hue, 360.0);
+    if (hue < 0) hue += 360.0;
+
+    sat = std::clamp(sat, 0.0, 1.0);
+    val = std::clamp(val, 0.0, 1.0);
+
+    if (sat == 0.0) {
+        const int grayValue = static_cast<int>(val * 255);
+        return {grayValue, grayValue, grayValue};
+    }
+
+    const double sector = hue / 60.0;
+    const int sectorIndex = static_cast<int>(sector);
+    const double fracPart = sector - sectorIndex;
+
+    const double p = val * (1.0 - sat);
+    const double q = val * (1.0 - sat * fracPart);
+    const double t = val * (1.0 - sat * (1.0 - fracPart));
+
+    switch (sectorIndex) {
+        case 0: return {
+                static_cast<int>(val * 255),
+                static_cast<int>(t * 255),
+                static_cast<int>(p * 255)
+            };
+        case 1: return {
+                static_cast<int>(q * 255),
+                static_cast<int>(val * 255),
+                static_cast<int>(p * 255)
+            };
+        case 2: return {
+                static_cast<int>(p * 255),
+                static_cast<int>(val * 255),
+                static_cast<int>(t * 255)
+            };
+        case 3: return {
+                static_cast<int>(p * 255),
+                static_cast<int>(q * 255),
+                static_cast<int>(val * 255)
+            };
+        case 4: return {
+                static_cast<int>(t * 255),
+                static_cast<int>(p * 255),
+                static_cast<int>(val * 255)
+            };
+        default: return {
+                static_cast<int>(val * 255),
+                static_cast<int>(p * 255),
+                static_cast<int>(q * 255)
+            };
     }
 }

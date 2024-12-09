@@ -87,6 +87,10 @@ private:
 
     void _loadImage(QImage *originalImage);
 
+    [[nodiscard("MEMORY LEAK")]] QImage *_generateImage();
+
+    QColor _convertHsvToRgb(double hue, double sat, double val);
+
     // ------------------------------
     // Class fields
     // ------------------------------
