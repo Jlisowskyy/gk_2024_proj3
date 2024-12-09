@@ -95,6 +95,14 @@ void ToolBar::setupToolBar(QToolBar *toolBar) {
     m_load = pButton->getAction();
     m_toolBar->addWidget(pButton);
 
+    pButton = new TextButton(m_toolBar, "Click here to save new image to a disk", "Save image", ":icons/load.png");
+    m_save = pButton->getAction();
+    m_toolBar->addWidget(pButton);
+
+    pButton = new TextButton(m_toolBar, "Click here to procedurally generate image", "Generate image", ":icons/load.png");
+    m_generate = pButton->getAction();
+    m_toolBar->addWidget(pButton);
+
     _addSeparator();
 }
 

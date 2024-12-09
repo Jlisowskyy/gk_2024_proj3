@@ -23,6 +23,8 @@ void StateMgr::setup(ToolBar *toolBar) {
     connect(toolBar->m_load, &QAction::triggered, this, &StateMgr::onLoadButtonClicked);
     connect(toolBar->m_refresh, &QAction::triggered, this, &StateMgr::onRefreshButtonClicked);
     connect(toolBar, &ToolBar::AlgorithmChanged, this, &StateMgr::onAlgorithmChanged);
+    connect(toolBar->m_save, &QAction::triggered, this, &StateMgr::onSaveImageClicked);
+    connect(toolBar->m_generate, &QAction::triggered, this, &StateMgr::onGenerateButtonClicked);
 }
 
 void StateMgr::loadDefaults() {
@@ -53,6 +55,24 @@ void StateMgr::onLoadButtonClicked() {
     qDebug() << "load button clicked";
 
     _loadImage(_loadTextureFromFile(_loadImageFileName()));
+}
+
+void StateMgr::onSaveImageClicked() {
+    const QString fileName = QFileDialog::getSaveFileName(m_toolBar->m_toolBar, tr("Save Image File"),
+                                                          QString(),
+                                                          tr("Images (*.png)"));
+    if (!fileName.isEmpty()) {
+        qDebug() << "save image to " << fileName;
+        const bool result = m_transformedImage->save(fileName);
+        if (!result) {
+            qDebug() << "save image failed";
+        }
+    } else {
+        qDebug() << "save image failed";
+    }
+}
+
+void StateMgr::onGenerateButtonClicked() {
 }
 
 QImage *StateMgr::_loadTextureFromFile(const QString &path) {

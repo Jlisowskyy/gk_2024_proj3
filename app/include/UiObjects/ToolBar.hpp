@@ -66,6 +66,8 @@ public:
     /* actions */
     QAction *m_refresh{};
     QAction *m_load{};
+    QAction *m_save{};
+    QAction *m_generate{};
 
     /* Radio buttons */
     QButtonGroup *m_buttonGroup{};

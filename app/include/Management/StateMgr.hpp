@@ -64,6 +64,10 @@ public slots:
 
     void onLoadButtonClicked();
 
+    void onSaveImageClicked();
+
+    void onGenerateButtonClicked();
+
     // ------------------------------
     // Class signals
     // ------------------------------
