@@ -147,6 +147,30 @@ class OctTree final {
             m_minChildIdx = minChildIdx;
         }
 
+        // [[nodiscard]] uint32_t _pickClosestColorIdx(const QRgb color) const {
+        //     const bool redBit = qRed(color) > qRed(m_color);
+        //     const bool greenBit = qGreen(color) > qGreen(m_color);
+        //     const bool blueBit = qBlue(color) > qBlue(m_color);
+        //
+        //     uint32_t bestPickIdx;
+        //     uint32_t bestPickSimilarities = 0;
+        //     for (uint32_t idx = 0; idx < NUM_CHILD; ++idx) {
+        //         if (m_children[idx]) {
+        //             const uint32_t similarities =
+        //                 ((idx & 1) == redBit) +
+        //                 (((idx >> 1) & 1) == greenBit) +
+        //                 (((idx >> 2) & 1) == blueBit);
+        //
+        //             if (similarities >= bestPickSimilarities) {
+        //                 bestPickSimilarities = similarities;
+        //                 bestPickIdx = idx;
+        //             }
+        //         }
+        //     }
+        //
+        //     return bestPickIdx;
+        // }
+
         [[nodiscard]] uint32_t _pickClosestColorIdx(const QRgb color) const {
             uint32_t bestPickIdx = 0;
             uint64_t minDistance = std::numeric_limits<uint64_t>::max();
