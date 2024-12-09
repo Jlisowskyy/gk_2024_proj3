@@ -148,21 +148,26 @@ class OctTree final {
         }
 
         [[nodiscard]] uint32_t _pickClosestColorIdx(const QRgb color) const {
-            const bool redBit = qRed(color) > qRed(m_color);
-            const bool greenBit = qGreen(color) > qGreen(m_color);
-            const bool blueBit = qBlue(color) > qBlue(m_color);
+            uint32_t bestPickIdx = 0;
+            uint64_t minDistance = std::numeric_limits<uint64_t>::max();
 
-            uint32_t bestPickIdx;
-            uint32_t bestPickSimilarities = 0;
             for (uint32_t idx = 0; idx < NUM_CHILD; ++idx) {
                 if (m_children[idx]) {
-                    const uint32_t similarities =
-                        ((idx & 1) == redBit) +
-                        (((idx >> 1) & 1) == greenBit) +
-                        (((idx >> 2) & 1) == blueBit);
+                    const QRgb childColor = m_children[idx]->m_color;
 
-                    if (similarities >= bestPickSimilarities) {
-                        bestPickSimilarities = similarities;
+                    // Calculate color distance using Euclidean distance in RGB space
+                    const int64_t redDiff = qRed(color) - qRed(childColor);
+                    const int64_t greenDiff = qGreen(color) - qGreen(childColor);
+                    const int64_t blueDiff = qBlue(color) - qBlue(childColor);
+
+                    const uint64_t distance =
+                        redDiff * redDiff +
+                        greenDiff * greenDiff +
+                        blueDiff * blueDiff;
+
+                    // Update best pick if this child is closer
+                    if (distance < minDistance) {
+                        minDistance = distance;
                         bestPickIdx = idx;
                     }
                 }
